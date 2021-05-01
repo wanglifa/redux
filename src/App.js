@@ -45,10 +45,18 @@ const 三老婆 = () => {
   return (
     <div>
       <div>三老婆</div>
-      <UserModify/>
+      <Wrapper />
     </div>
   );
 }
+const Wrapper = () => {
+  const {appState, setAppState} = useContext(appContext);
+  const dispatch = (action) => {
+    setAppState(reducer(appState, action));
+  }
+  return <UserModify dispatch={dispatch} state={appState}/>
+}
+
 const User = () => {
   const {appState} = useContext(appContext);
   return (
@@ -57,14 +65,13 @@ const User = () => {
     </div>
   )
 }
-const UserModify = () => {
-  const {appState, setAppState} = useContext(appContext);
+const UserModify = ({dispatch, state}) => {
   const onChange = (event) => {
-    setAppState(reducer(appState, {type: 'updateUser', payload: {name: event.target.value}}));
+    dispatch({type: 'updateUser', payload: {name: event.target.value}})
   }
   return (
     <div>
-      <input value={appState.user.name} onChange={onChange}/>
+      <input value={state.user.name} onChange={onChange}/>
     </div>
   )
 }
