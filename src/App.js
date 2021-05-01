@@ -44,9 +44,13 @@ const UserModify = connect(state => {
   return {
     name: state.user.name
   }
-})(({dispatch, name}) => {
+}, dispatch => {
+  return {
+    updateUser: (attrs) => dispatch({type: 'updateUser', payload: attrs})
+  }
+})(({updateUser, name}) => {
   const onChange = (event) => {
-    dispatch({type: 'updateUser', payload: {name: event.target.value}})
+    updateUser({name: event.target.value})
   }
   return (
     <div>

@@ -43,9 +43,13 @@ const reducer = (state, {type, payload}) => {
     return state;
   }
 }
-export const connect = (mapStateToProps) => (Component) => (props) => {
+export const connect = (mapStateToProps, mapDispatchToProps) => (Component) => (props) => {
     const {state, setState, subscribe} = useContext(appContext);
+    const dispatch = (action) => {
+      setState(reducer(state, action));
+    }
     const data = mapStateToProps ? mapStateToProps(state) : {state};
+    const disaptcher = mapDispatchToProps ? mapDispatchToProps(dispatch) : {dispatch};
     useEffect(() => subscribe(() => {
       const newData = mapStateToProps ? mapStateToProps(store.state) : {state: store.state};
       if (changed(data, newData)) {
@@ -53,8 +57,5 @@ export const connect = (mapStateToProps) => (Component) => (props) => {
       }
     }), [mapStateToProps])
     const [, update] = useState({});
-    const dispatch = (action) => {
-      setState(reducer(state, action));
-    }
-    return <Component dispatch={dispatch} state={state} {...props} {...data} />
+    return <Component dispatch={dispatch} state={state} {...props} {...data} {...disaptcher} />
   }
