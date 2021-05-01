@@ -37,7 +37,15 @@ export const store = {
     }
   },
 }
-const dispatch = store.dispatch;
+let dispatch = store.dispatch;
+const prevDispatch = dispatch;
+dispatch = (action) => {
+  if (action instanceof Function) {
+    action(dispatch)
+  } else {
+    prevDispatch(action)
+  }
+}
 export const connect = (mapStateToProps, mapDispatchToProps) => (Component) => (props) => {
     const data = mapStateToProps ? mapStateToProps(state) : {state};
     const disaptcher = mapDispatchToProps ? mapDispatchToProps(dispatch) : {dispatch};

@@ -57,6 +57,13 @@ const 三老婆 = () => {
     </div>
   );
 }
+const ajax = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({data: {name: '3秒后的lifa'}})
+    }, 3000)
+  })
+}
 const User = connect(userSelector)(({user}) => {
   return (
     <div>
@@ -64,17 +71,23 @@ const User = connect(userSelector)(({user}) => {
     </div>
   )
 })
+const fetchUser = (dispatch) => {
+  ajax('/user').then(response => {
+    dispatch({type: 'updateUser', payload: response.data})
+  })
+}
 const UserModify = connect(state => {
   return {
     name: state.user.name
   }
-}, userDispatcher)(({updateUser, name}) => {
-  const onChange = (event) => {
-    updateUser({name: event.target.value})
+}, null)(({dispatch, name}) => {
+  const onClick = () => {
+    dispatch(fetchUser)
   }
   return (
     <div>
-      <input value={name} onChange={onChange}/>
+      <div>User: {name}</div>
+      <button onClick={onClick}>异步获取 user</button>
     </div>
   )
 })
