@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {appContext, store, connect} from "./redux";
 
 
@@ -31,22 +31,26 @@ const 三老婆 = () => {
     </div>
   );
 }
-const User = connect(() => {
-  const {state} = useContext(appContext);
+const User = connect((state) => {
+  return {user: state.user}
+})(({user}) => {
   return (
     <div>
-      {state.user.name}
+      {user.name}
     </div>
   )
 })
-const UserModify = connect(({dispatch, state, a}) => {
-  console.log(a, 'a')
+const UserModify = connect(state => {
+  return {
+    name: state.user.name
+  }
+})(({dispatch, name}) => {
   const onChange = (event) => {
     dispatch({type: 'updateUser', payload: {name: event.target.value}})
   }
   return (
     <div>
-      <input value={state.user.name} onChange={onChange}/>
+      <input value={name} onChange={onChange}/>
     </div>
   )
 })
