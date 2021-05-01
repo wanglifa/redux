@@ -47,7 +47,7 @@ export const connect = (mapStateToProps) => (Component) => (props) => {
     const {state, setState, subscribe} = useContext(appContext);
     const data = mapStateToProps ? mapStateToProps(state) : {state};
     useEffect(() => subscribe(() => {
-      const newData = mapStateToProps ? mapStateToProps(store) : {state: store.state};
+      const newData = mapStateToProps ? mapStateToProps(store.state) : {state: store.state};
       if (changed(data, newData)) {
         update({});
       }
