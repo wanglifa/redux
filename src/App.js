@@ -14,6 +14,17 @@ const reducer = (state, {type, payload}) => {
     return state;
   }
 }
+const connect = (Component) => {
+  const Wrapper = () => {
+    const {appState, setAppState} = useContext(appContext);
+    const dispatch = (action) => {
+      setAppState(reducer(appState, action));
+    }
+    return <Component dispatch={dispatch} state={appState}/>
+  }
+  return Wrapper;
+}
+
 function App() {
   const [appState, setAppState] = useState({
     user: {
@@ -45,18 +56,10 @@ const 三老婆 = () => {
   return (
     <div>
       <div>三老婆</div>
-      <Wrapper />
+      <UserModify />
     </div>
   );
 }
-const Wrapper = () => {
-  const {appState, setAppState} = useContext(appContext);
-  const dispatch = (action) => {
-    setAppState(reducer(appState, action));
-  }
-  return <UserModify dispatch={dispatch} state={appState}/>
-}
-
 const User = () => {
   const {appState} = useContext(appContext);
   return (
@@ -65,7 +68,7 @@ const User = () => {
     </div>
   )
 }
-const UserModify = ({dispatch, state}) => {
+const UserModify = connect(({dispatch, state}) => {
   const onChange = (event) => {
     dispatch({type: 'updateUser', payload: {name: event.target.value}})
   }
@@ -74,6 +77,6 @@ const UserModify = ({dispatch, state}) => {
       <input value={state.user.name} onChange={onChange}/>
     </div>
   )
-}
+})
 
 export default App;
