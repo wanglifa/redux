@@ -82,7 +82,7 @@ const UserModify = connect(state => {
   }
 }, null)(({dispatch, name}) => {
   const onClick = () => {
-    dispatch(fetchUser)
+    dispatch({type: 'updateUser', payload: ajax('/user').then(res => res.data)})
   }
   return (
     <div>

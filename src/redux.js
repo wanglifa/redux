@@ -46,6 +46,16 @@ dispatch = (action) => {
     prevDispatch(action)
   }
 }
+const prevDispatch2 = dispatch;
+dispatch = (action) => {
+  if (action.payload instanceof Promise) {
+    action.payload.then(res => {
+      dispatch({...action, payload: res})
+    })
+  } else {
+    prevDispatch2(action);
+  }
+}
 export const connect = (mapStateToProps, mapDispatchToProps) => (Component) => (props) => {
     const data = mapStateToProps ? mapStateToProps(state) : {state};
     const disaptcher = mapDispatchToProps ? mapDispatchToProps(dispatch) : {dispatch};
