@@ -1,9 +1,16 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
+let state = undefined;
+let reducer = undefined;
+let listener = [];
+let setState = (newState) => {
+  state = newState
+  listener.map(fn => fn())
+}
 
 export const appContext = createContext(null)
-export const createStore = (reducer, initState) => {
-  store.reducer = reducer;
-  store.state = initState;
+export const createStore = (_reducer, initState) => {
+  reducer = _reducer;
+  state = initState;
   return store;
 }
 const changed = (oldState, newState) => {
@@ -16,30 +23,26 @@ const changed = (oldState, newState) => {
   return changed;
 };
 export const store = {
-  state: undefined,
-  reducer: undefined,
-  listener: [],
+  getState() {
+    return state;
+  },
+  dispatch(action) {
+    setState(reducer(state, action));
+  },
   subscribe(fn) {
-    store.listener.push(fn);
+    listener.push(fn);
     return () => {
-      let index = store.listener.indexOf(fn);
-      store.listener.splice(index, 1);
+      let index = listener.indexOf(fn);
+      listener.splice(index, 1);
     }
   },
-  setState(newState) {
-    store.state = newState
-    store.listener.map(fn => fn())
-  }
 }
+const dispatch = store.dispatch;
 export const connect = (mapStateToProps, mapDispatchToProps) => (Component) => (props) => {
-    const {state, setState, subscribe} = useContext(appContext);
-    const dispatch = (action) => {
-      setState(store.reducer(state, action));
-    }
     const data = mapStateToProps ? mapStateToProps(state) : {state};
     const disaptcher = mapDispatchToProps ? mapDispatchToProps(dispatch) : {dispatch};
-    useEffect(() => subscribe(() => {
-      const newData = mapStateToProps ? mapStateToProps(store.state) : {state: store.state};
+    useEffect(() => store.subscribe(() => {
+      const newData = mapStateToProps ? mapStateToProps(state) : {state};
       if (changed(data, newData)) {
         update({});
       }
