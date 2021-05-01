@@ -47,3 +47,11 @@ export const connect = (mapStateToProps, mapDispatchToProps) => (Component) => (
     const [, update] = useState({});
     return <Component dispatch={dispatch} state={state} {...props} {...data} {...disaptcher} />
   }
+
+export const Provider = ({store, children}) => {
+    return (
+      <appContext.Provider value={store}>
+        {children}
+      </appContext.Provider>
+    )
+}

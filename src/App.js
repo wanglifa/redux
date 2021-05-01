@@ -1,5 +1,5 @@
 import React from 'react';
-import {appContext, connect, createStore} from "./redux";
+import {appContext, connect, createStore, Provider} from "./redux";
 const reducer = (state, {type, payload}) => {
   if (type === 'updateUser') {
     return {
@@ -30,11 +30,11 @@ const userDispatcher = dispatch => {
 }
 function App() {
   return (
-    <appContext.Provider value={store}>
+    <Provider store={store}>
       <大老婆/>
       <二老婆/>
       <三老婆/>
-    </appContext.Provider>
+    </Provider>
   );
 }
 
