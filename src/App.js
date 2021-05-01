@@ -1,55 +1,6 @@
-import React, {createContext, useState, useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
+import {appContext, store, connect} from "./redux";
 
-const appContext = createContext(null)
-const store = {
-  state: {
-    user: {
-      name: 'lifa',
-      age: 18
-    }
-  },
-  listener: [],
-  subscribe(fn) {
-    store.listener.push(fn);
-    return () => {
-      let index = store.listener.indexOf(fn);
-      store.listener.splice(index, 1);
-    }
-  },
-  setState(newState) {
-    store.state = newState
-    store.listener.map(fn => fn())
-  }
-}
-const reducer = (state, {type, payload}) => {
-  if (type === 'updateUser') {
-    return {
-      ...state,
-      user: {
-        ...state.user,
-        ...payload
-      }
-    }
-  } else {
-    return state;
-  }
-}
-const connect = (Component) => {
-  const Wrapper = () => {
-    const {state, setState, subscribe} = useContext(appContext);
-    useEffect(() => {
-      subscribe(() => {
-        update({});
-      })
-    }, [])
-    const [, update] = useState({});
-    const dispatch = (action) => {
-      setState(reducer(state, action));
-    }
-    return <Component dispatch={dispatch} state={state}/>
-  }
-  return Wrapper;
-}
 
 function App() {
   return (
@@ -76,7 +27,7 @@ const 三老婆 = () => {
   return (
     <div>
       <div>三老婆</div>
-      <UserModify />
+      <UserModify a={1}/>
     </div>
   );
 }
@@ -88,7 +39,8 @@ const User = connect(() => {
     </div>
   )
 })
-const UserModify = connect(({dispatch, state}) => {
+const UserModify = connect(({dispatch, state, a}) => {
+  console.log(a, 'a')
   const onChange = (event) => {
     dispatch({type: 'updateUser', payload: {name: event.target.value}})
   }
