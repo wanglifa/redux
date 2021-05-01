@@ -1,7 +1,15 @@
 import React from 'react';
 import {appContext, store, connect} from "./redux";
 
-
+const userSelector = state => {
+  return {user: state.user}
+}
+// 提取的写 user 的接口
+const userDispatcher = dispatch => {
+  return {
+    updateUser: (attrs) => dispatch({type: 'updateUser', payload: attrs})
+  }
+}
 function App() {
   return (
     <appContext.Provider value={store}>
@@ -31,9 +39,7 @@ const 三老婆 = () => {
     </div>
   );
 }
-const User = connect((state) => {
-  return {user: state.user}
-})(({user}) => {
+const User = connect(userSelector)(({user}) => {
   return (
     <div>
       {user.name}
@@ -44,11 +50,7 @@ const UserModify = connect(state => {
   return {
     name: state.user.name
   }
-}, dispatch => {
-  return {
-    updateUser: (attrs) => dispatch({type: 'updateUser', payload: attrs})
-  }
-})(({updateUser, name}) => {
+}, userDispatcher)(({updateUser, name}) => {
   const onChange = (event) => {
     updateUser({name: event.target.value})
   }
