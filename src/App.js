@@ -1,6 +1,24 @@
 import React from 'react';
-import {appContext, store, connect} from "./redux";
-
+import {appContext, connect, createStore} from "./redux";
+const reducer = (state, {type, payload}) => {
+  if (type === 'updateUser') {
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        ...payload
+      }
+    }
+  } else {
+    return state;
+  }
+}
+const store = createStore(reducer, {
+  user: {
+    name: 'lifa',
+    age: 18
+  }
+})
 const userSelector = state => {
   return {user: state.user}
 }

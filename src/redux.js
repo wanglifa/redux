@@ -1,6 +1,11 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 
 export const appContext = createContext(null)
+export const createStore = (reducer, initState) => {
+  store.reducer = reducer;
+  store.state = initState;
+  return store;
+}
 const changed = (oldState, newState) => {
   let changed = false;
   for (let key in oldState) {
@@ -11,12 +16,8 @@ const changed = (oldState, newState) => {
   return changed;
 };
 export const store = {
-  state: {
-    user: {
-      name: 'lifa',
-      age: 18
-    }
-  },
+  state: undefined,
+  reducer: undefined,
   listener: [],
   subscribe(fn) {
     store.listener.push(fn);
@@ -30,23 +31,10 @@ export const store = {
     store.listener.map(fn => fn())
   }
 }
-const reducer = (state, {type, payload}) => {
-  if (type === 'updateUser') {
-    return {
-      ...state,
-      user: {
-        ...state.user,
-        ...payload
-      }
-    }
-  } else {
-    return state;
-  }
-}
 export const connect = (mapStateToProps, mapDispatchToProps) => (Component) => (props) => {
     const {state, setState, subscribe} = useContext(appContext);
     const dispatch = (action) => {
-      setState(reducer(state, action));
+      setState(store.reducer(state, action));
     }
     const data = mapStateToProps ? mapStateToProps(state) : {state};
     const disaptcher = mapDispatchToProps ? mapDispatchToProps(dispatch) : {dispatch};
