@@ -1,6 +1,17 @@
 import React, {createContext, useState, useContext} from 'react';
 
 const appContext = createContext(null)
+const store = {
+  state: {
+    user: {
+      name: 'lifa',
+      age: 18
+    }
+  },
+  setState(newState) {
+    store.state = newState
+  }
+}
 const reducer = (state, {type, payload}) => {
   if (type === 'updateUser') {
     return {
@@ -16,24 +27,20 @@ const reducer = (state, {type, payload}) => {
 }
 const connect = (Component) => {
   const Wrapper = () => {
-    const {appState, setAppState} = useContext(appContext);
+    const {state, setState} = useContext(appContext);
+    const [, update] = useState({});
     const dispatch = (action) => {
-      setAppState(reducer(appState, action));
+      setState(reducer(state, action));
+      update({});
     }
-    return <Component dispatch={dispatch} state={appState}/>
+    return <Component dispatch={dispatch} state={state}/>
   }
   return Wrapper;
 }
 
 function App() {
-  const [appState, setAppState] = useState({
-    user: {
-      name: 'lifa',
-      age: 18
-    }
-  })
   return (
-    <appContext.Provider value={{appState, setAppState}}>
+    <appContext.Provider value={store}>
       <大老婆/>
       <二老婆/>
       <三老婆/>
@@ -61,10 +68,10 @@ const 三老婆 = () => {
   );
 }
 const User = () => {
-  const {appState} = useContext(appContext);
+  const {state} = useContext(appContext);
   return (
     <div>
-      {appState.user.name}
+      {state.user.name}
     </div>
   )
 }
